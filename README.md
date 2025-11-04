@@ -37,5 +37,5 @@ lalala
 ---
 
 ## 👥 Autores
-#### Responsável por A, B e C:  [CrystoferAT](https://github.com/CrystoferAT)
-#### Responsável por X, Y e Z:  [josssgz](https://github.com/josssgz)
+#### Foco no Fluxo de Jogo:  [CrystoferAT](https://github.com/CrystoferAT)
+#### Foco no Fluxo de Admin e Estrutura Central:  [josssgz](https://github.com/josssgz)
