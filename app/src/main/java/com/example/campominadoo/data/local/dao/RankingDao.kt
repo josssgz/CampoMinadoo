@@ -1,16 +1,19 @@
 package com.example.campominadoo.data.local.dao
 
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
 import com.example.campominadoo.data.local.model.Ranking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
+@Dao
 interface RankingDao {
 
-    // A Crys vai implementar o @Query aqui depois
-    fun getRanking(): Flow<List<Ranking>> = flowOf(emptyList()) // Retorna um Flow vazio
+    @Query("SELECT * FROM ranking_table ORDER BY pontuacao DESC, dataRegistro DESC LIMIT 10")
+    fun getRanking(): Flow<List<Ranking>>
 
-    // A Crys vai implementar o @Insert aqui depois
-    suspend fun saveScore(ranking: Ranking) {
-        // Não faz nada por enquanto
-    }
+    @Insert
+    suspend fun saveScore(ranking: Ranking)
+
 }

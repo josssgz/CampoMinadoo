@@ -1,16 +1,18 @@
 package com.example.campominadoo.data.local.dao
 
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.example.campominadoo.data.local.model.ConfiguracoesUsuario
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
+@Dao
 interface ConfiguracoesDao {
+    @Query("SELECT * FROM configuracoes_table WHERE id = 1")
+    fun getSettings(): Flow<ConfiguracoesUsuario?>
 
-    // A Crys vai implementar o @Query aqui depois
-    fun getSettings(): Flow<ConfiguracoesUsuario> = flowOf(ConfiguracoesUsuario())
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateSettings(config: ConfiguracoesUsuario)
 
-    // A Crys vai implementar o @Update aqui depois
-    suspend fun updateSettings(config: ConfiguracoesUsuario) {
-        // Não faz nada por enquanto
-    }
 }

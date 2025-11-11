@@ -11,7 +11,7 @@ interface GameRepository{
 
     suspend fun saveScore(ranking: Ranking)
 
-    fun getSettings(): Flow<ConfiguracoesUsuario>
+    fun getSettings(): Flow<ConfiguracoesUsuario?>
 
     suspend fun updateSettings(config: ConfiguracoesUsuario)
 

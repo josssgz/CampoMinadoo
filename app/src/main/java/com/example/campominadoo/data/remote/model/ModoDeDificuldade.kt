@@ -1,5 +1,8 @@
 package com.example.campominadoo.data.remote.model
 
+import androidx.room.Entity
+
+@Entity(tableName = "modo_de_dificuldade")
 data class ModoDeDificuldade(
     val id: String = "",
     val nome: String = "",
