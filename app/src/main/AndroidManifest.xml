@@ -12,10 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CampoMinadoo">
         <activity
-            android:name=".MainActivity"
+            android:name=".MyApplication"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.CampoMinadoo">
+            android:theme="@style/Theme.CampoMinadoo"
+            tools:ignore="Instantiatable">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

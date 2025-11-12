@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.campominadoo.ui.viewmodel.GameViewModel
+import com.example.campominadoo.ui.viewmodel.ViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale // Importar o Locale correto
@@ -46,7 +47,8 @@ import java.util.Locale // Importar o Locale correto
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
-    viewModel: GameViewModel = viewModel() // Use a factory do Jose aqui
+    factory: ViewModelFactory, onNavigateUp: () -> Unit,
+    viewModel: GameViewModel = viewModel(factory = factory) // Use a factory do Jose aqui
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val allCells = remember(state.board) { state.board.flatten() }

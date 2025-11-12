@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.example.campominadoo.data.local.model.Ranking
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
 @Dao
 interface RankingDao {
@@ -15,5 +14,8 @@ interface RankingDao {
 
     @Insert
     suspend fun saveScore(ranking: Ranking)
+
+    @Query("DELETE FROM ranking_table")
+    suspend fun clearRanking()
 
 }

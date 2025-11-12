@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.campominadoo.data.local.model.ConfiguracoesUsuario
 import com.example.campominadoo.data.local.model.Ranking
+import com.example.campominadoo.data.remote.model.ModoDeDificuldade
 import com.example.campominadoo.data.repository.GameRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -28,6 +29,7 @@ class GameViewModel(
     init {
         // Inicia a coleta de dados persistentes assim que o ViewModel é criado
         collectPersistentData()
+        loadModosDeDificuldade()
     }
 
     private fun collectPersistentData() {
@@ -44,7 +46,6 @@ class GameViewModel(
                 // Se não houver configurações, cria um valor padrão
                 if (settings == null) {
                     val defaultSettings = ConfiguracoesUsuario(
-                        nivelDificuldade = "Fácil",
                         somHabilitado = true,
                         vibracaoHabilitada = true
                     )
@@ -58,20 +59,18 @@ class GameViewModel(
     // Lógica do Jogo de Campo Minado
     // =======================================================
 
-    fun startGame() {
-        // Obtém o nível de dificuldade das configurações e gera o tabuleiro
-        val nivel = _uiState.value.currentSettings?.nivelDificuldade ?: "Fácil"
-        val (rows, cols, mines) = getDifficultyParams(nivel)
+    fun startGame(modo: ModoDeDificuldade) {
+        _uiState.update { it.copy(currentDifficultyName = modo.nome) }
 
-        generateBoard(rows, cols, mines)
+        generateBoard(modo.linhas, modo.colunas, modo.minas)
         startTimer()
     }
 
-    private fun getDifficultyParams(level: String): Triple<Int, Int, Int> {
-        return when (level) {
-            "Médio" -> Triple(12, 12, 30)
-            "Difícil" -> Triple(16, 16, 60)
-            else -> Triple(8, 8, 10) // Fácil
+    fun loadModosDeDificuldade() {
+        viewModelScope.launch {
+            // Chama a função do repositório (que o Jose implementou)
+            val modos = repository.getModosDeDificuldade()
+            _uiState.update { it.copy(modosDeDificuldade = modos) }
         }
     }
 
@@ -229,7 +228,8 @@ class GameViewModel(
 
     fun saveScore(playerName: String) {
         viewModelScope.launch {
-            val currentScore = calculateScore(_uiState.value.timeElapsed, _uiState.value.currentSettings?.nivelDificuldade ?: "Fácil")
+            val currentScore = calculateScore(_uiState.value.timeElapsed, _uiState.value.currentDifficultyName)
+
             val ranking = Ranking(
                 nomeJogador = playerName,
                 pontuacao = currentScore,
@@ -255,6 +255,12 @@ class GameViewModel(
     fun updateSettings(config: ConfiguracoesUsuario) {
         viewModelScope.launch {
             repository.updateSettings(config)
+        }
+    }
+
+    fun onClearRanking() {
+        viewModelScope.launch {
+            repository.clearRanking()
         }
     }
 

@@ -1,5 +1,6 @@
 import com.example.campominadoo.data.local.model.ConfiguracoesUsuario
 import com.example.campominadoo.data.local.model.Ranking
+import com.example.campominadoo.data.remote.model.ModoDeDificuldade
 
 /**
  * Representa uma única célula no tabuleiro.
@@ -26,7 +27,9 @@ data class GameUiState(
     val timeElapsed: Long = 0,
     val rankingList: List<Ranking> = emptyList(),
     val currentSettings: ConfiguracoesUsuario? = null,
-    val isGameOverDialogVisible: Boolean = false
+    val isGameOverDialogVisible: Boolean = false,
+    val modosDeDificuldade: List<ModoDeDificuldade> = emptyList(),
+    val currentDifficultyName: String = "Fácil"
 )
 
 enum class GameStatus { READY, PLAYING, WON, LOST }

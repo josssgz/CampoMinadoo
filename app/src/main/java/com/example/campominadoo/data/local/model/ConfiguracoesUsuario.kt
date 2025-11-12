@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 data class ConfiguracoesUsuario(
     @PrimaryKey
     val id: Int = 1,
-    val nivelDificuldade: String,
     val somHabilitado: Boolean,
     val vibracaoHabilitada: Boolean
 )

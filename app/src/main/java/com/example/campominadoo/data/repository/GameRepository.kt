@@ -15,6 +15,8 @@ interface GameRepository{
 
     suspend fun updateSettings(config: ConfiguracoesUsuario)
 
+    suspend fun clearRanking()
+
     //
 
     suspend fun getModosDeDificuldade(): List<ModoDeDificuldade>
