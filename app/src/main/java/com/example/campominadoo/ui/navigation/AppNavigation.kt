@@ -1,8 +1,6 @@
 package com.example.campominadoo.ui.navigation
 
-import android.app.Application
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -14,10 +12,8 @@ import com.example.campominadoo.ui.screens.jogador.PlayerHomeScreen
 import com.example.campominadoo.ui.viewmodel.ViewModelFactory
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(factory: ViewModelFactory) {
     val navController = rememberNavController()
-    val application = LocalContext.current.applicationContext as Application
-    val factory = ViewModelFactory(application)
 
     NavHost(
         navController = navController,
