@@ -27,10 +27,9 @@ import com.example.campominadoo.ui.viewmodel.ViewModelFactory
 @Composable
 fun PlayScreen(
     factory: ViewModelFactory,
-    onNavigateToGame: () -> Unit
+    onNavigateToGame: () -> Unit,
+    viewModel: GameViewModel = viewModel(factory = factory)
 ) {
-    val viewModel: GameViewModel = viewModel(factory = factory)
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(

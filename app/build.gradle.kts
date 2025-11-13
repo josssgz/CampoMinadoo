@@ -1,8 +1,7 @@
 plugins {
-
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
 }
@@ -43,50 +42,41 @@ android {
 }
 
 dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
 
+
+    implementation("com.google.firebase:firebase-firestore-ktx")
+
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.material3)
+    // Dependências básicas - Use os aliases do TOML
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // Compose (Usando o BOM declarado no TOML)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.firebase.common.ktx)
-    implementation(libs.androidx.room.common.jvm)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.foundation)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation("com.google.firebase:firebase-ktx")
-    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
-    implementation("com.google.firebase:firebase-firestore-ktx")
-
-    val room_version = "2.6.1"
+    // Room (Use o alias do TOML se estiver definido, ou use a variável para consistência)
+    val room_version = "2.6.1" // Mantenha a variável local ou use uma versão no TOML
     implementation("androidx.room:room-runtime:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
+    // implementation(libs.androidx.room.ktx) e implementation(libs.androidx.room.common.jvm) são redundantes
 
-    val compose_bom_version = "2024.05.00"
-    implementation(platform("androidx.compose:compose-bom:$compose_bom_version"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
+    // Outras dependências que você adicionou
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0") // Mantenha, pois não tem alias no TOML
+    implementation("androidx.navigation:navigation-compose:2.7.7") // Mantenha
 
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3") // Mantenha
 
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-
-    implementation("androidx.activity:activity-compose:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    // Dependências de teste (parecem OK)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    // ...
 }

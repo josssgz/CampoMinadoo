@@ -60,7 +60,13 @@ class GameViewModel(
     // =======================================================
 
     fun startGame(modo: ModoDeDificuldade) {
-        _uiState.update { it.copy(currentDifficultyName = modo.nome) }
+        _uiState.update {
+            it.copy(
+                currentDifficultyMode = modo,
+                currentDifficultyName = modo.nome,
+                isGameOverDialogVisible = false
+            )
+        }
 
         generateBoard(modo.linhas, modo.colunas, modo.minas)
         startTimer()
@@ -68,11 +74,14 @@ class GameViewModel(
 
     fun loadModosDeDificuldade() {
         viewModelScope.launch {
-            // Chama a função do repositório (que o Jose implementou)
             val modos = repository.getModosDeDificuldade()
             _uiState.update { it.copy(modosDeDificuldade = modos) }
+
         }
     }
+
+
+
 
     private fun generateBoard(rows: Int, cols: Int, mines: Int) {
         val newBoard = MutableList(rows) { r ->

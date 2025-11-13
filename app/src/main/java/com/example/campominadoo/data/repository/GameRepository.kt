@@ -19,7 +19,12 @@ interface GameRepository{
 
     //
 
-    suspend fun getModosDeDificuldade(): List<ModoDeDificuldade>
+    suspend fun getModosDeDificuldade(): List<ModoDeDificuldade> {
+        return listOf(
+            ModoDeDificuldade.FACIL,
+            ModoDeDificuldade.MEDIO
+        )
+    }
 
     suspend fun addModo(modo: ModoDeDificuldade)
 

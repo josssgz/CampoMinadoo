@@ -19,17 +19,21 @@ data class Cell(
  */
 data class GameUiState(
     val board: List<List<Cell>> = emptyList(),
-    val rows: Int = 0,
-    val cols: Int = 0,
-    val totalMines: Int = 0,
+
+    val currentDifficultyMode: ModoDeDificuldade = ModoDeDificuldade.FACIL,
+    val rows: Int = currentDifficultyMode.linhas,
+    val cols: Int = currentDifficultyMode.colunas,
+    val totalMines: Int = currentDifficultyMode.minas,
+
     val gameStatus: GameStatus = GameStatus.READY,
-    val remainingFlags: Int = 0,
+    val remainingFlags: Int = totalMines,
     val timeElapsed: Long = 0,
     val rankingList: List<Ranking> = emptyList(),
     val currentSettings: ConfiguracoesUsuario? = null,
     val isGameOverDialogVisible: Boolean = false,
     val modosDeDificuldade: List<ModoDeDificuldade> = emptyList(),
-    val currentDifficultyName: String = "Fácil"
+    val currentDifficultyName: String = currentDifficultyMode.nome,
+
 )
 
 enum class GameStatus { READY, PLAYING, WON, LOST }

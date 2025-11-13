@@ -42,15 +42,16 @@ import com.example.campominadoo.ui.viewmodel.GameViewModel
 import com.example.campominadoo.ui.viewmodel.ViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale // Importar o Locale correto
+import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
     factory: ViewModelFactory, onNavigateUp: () -> Unit,
-    viewModel: GameViewModel = viewModel(factory = factory) // Use a factory do Jose aqui
+    viewModel: GameViewModel = viewModel(factory = factory)
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
     val allCells = remember(state.board) { state.board.flatten() }
 
     Scaffold( topBar = {
@@ -96,7 +97,7 @@ fun GameScreen(
             timeElapsed = state.timeElapsed, // Passa o tempo real
             onSaveScore = viewModel::saveScore,
             onDismiss = { /* manter aberto ou navegar */ },
-            onNewGame = { viewModel.startGame() }
+            onNewGame = { viewModel.startGame(state.currentDifficultyMode) }
         )
     }
 }
