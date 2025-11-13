@@ -55,7 +55,9 @@ fun PlayScreen(
                 Text("Nenhum modo de dificuldade encontrado.")
             }
             else {
-                uiState.modosDeDificuldade.forEach { modo ->
+                uiState.modosDeDificuldade
+                    .sortedBy { it.linhas }
+                    .forEach { modo ->
                     Button(
                         onClick = {
                             viewModel.startGame(modo)

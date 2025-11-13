@@ -21,10 +21,8 @@ import com.example.campominadoo.ui.viewmodel.ViewModelFactory
 @Composable
 fun PlayerHomeScreen(
     factory: ViewModelFactory,
-    // Este é o NavController PRINCIPAL (do AppNavigation)
     mainNavController: NavHostController
 ) {
-    // Este é o NavController INTERNO (só para a Bottom Bar)
     val playerNavController = rememberNavController()
 
     val screens = listOf(
@@ -46,7 +44,6 @@ fun PlayerHomeScreen(
                         selected = currentRoute == screen.route,
                         onClick = {
                             playerNavController.navigate(screen.route) {
-                                // Evita empilhar a mesma tela várias vezes
                                 popUpTo(playerNavController.graph.startDestinationId)
                                 launchSingleTop = true
                             }
@@ -56,31 +53,24 @@ fun PlayerHomeScreen(
             }
         }
     ) { innerPadding ->
-        // --- NavHost Aninhado ---
-        // Este NavHost controla o CONTEÚDO que aparece acima da Bottom Bar
         NavHost(
             navController = playerNavController,
             startDestination = PlayerBottomBarScreens.Play.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            // Rota 1: PlayScreen
             composable(PlayerBottomBarScreens.Play.route) {
                 PlayScreen(
                     factory = factory,
-                    // Quando o PlayScreen quiser ir para o JOGO,
-                    // ele usa o NavController PRINCIPAL
                     onNavigateToGame = { mainNavController.navigate(AppScreens.Game.route) }
                 )
             }
 
-            // Rota 2: RankingScreen
             composable(PlayerBottomBarScreens.Ranking.route) {
                 RankingScreen(
                     factory = factory
                 )
             }
 
-            // Rota 3: SettingsScreen
             composable(PlayerBottomBarScreens.Settings.route) {
                 SettingsScreen(
                     factory = factory

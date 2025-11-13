@@ -2,21 +2,15 @@ import com.example.campominadoo.data.local.model.ConfiguracoesUsuario
 import com.example.campominadoo.data.local.model.Ranking
 import com.example.campominadoo.data.remote.model.ModoDeDificuldade
 
-/**
- * Representa uma única célula no tabuleiro.
- */
 data class Cell(
     val x: Int,
     val y: Int,
     val isMine: Boolean = false,
     val isRevealed: Boolean = false,
     val isFlagged: Boolean = false,
-    val adjacentMines: Int = 0 // Número de minas vizinhas
+    val adjacentMines: Int = 0
 )
 
-/**
- * Estado que a UI observa. Contém TUDO o que a UI precisa saber.
- */
 data class GameUiState(
     val board: List<List<Cell>> = emptyList(),
 

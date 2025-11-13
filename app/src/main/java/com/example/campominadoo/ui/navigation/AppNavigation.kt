@@ -19,20 +19,17 @@ fun AppNavigation(factory: ViewModelFactory) {
         navController = navController,
         startDestination = AppScreens.Login.route
     ) {
-        // Tela de Login (Modificada)
         composable(AppScreens.Login.route) {
             LoginScreen(
-                // 👇 CORRETO: Navega para a "tela-mãe" do Jogador
                 onPlayerClick = { navController.navigate(AppScreens.PlayerHome.route) },
                 onAdminClick = { navController.navigate(AppScreens.AdminDashboard.route) }
             )
         }
 
-        // 👇 NOVA ROTA: A "tela-mãe" do Jogador
         composable(AppScreens.PlayerHome.route) {
             PlayerHomeScreen(
                 factory = factory,
-                mainNavController = navController // Passa o NavController principal
+                mainNavController = navController
             )
         }
 

@@ -27,23 +27,19 @@ class GameViewModel(
     private var timerJob: Job? = null
 
     init {
-        // Inicia a coleta de dados persistentes assim que o ViewModel é criado
         collectPersistentData()
         loadModosDeDificuldade()
     }
 
     private fun collectPersistentData() {
-        // Coleta o ranking
         viewModelScope.launch {
             repository.getRanking().collect { rankingList ->
                 _uiState.update { it.copy(rankingList = rankingList) }
             }
         }
-        // Coleta as configurações
         viewModelScope.launch {
             repository.getSettings().collect { settings ->
                 _uiState.update { it.copy(currentSettings = settings) }
-                // Se não houver configurações, cria um valor padrão
                 if (settings == null) {
                     val defaultSettings = ConfiguracoesUsuario(
                         somHabilitado = true,
@@ -55,9 +51,7 @@ class GameViewModel(
         }
     }
 
-    // =======================================================
-    // Lógica do Jogo de Campo Minado
-    // =======================================================
+    //
 
     fun startGame(modo: ModoDeDificuldade) {
         _uiState.update {
@@ -80,15 +74,22 @@ class GameViewModel(
         }
     }
 
-
-
+    fun setCurrentDifficulty(modo: ModoDeDificuldade) {
+        _uiState.update {
+            it.copy(
+                currentDifficultyMode = modo,
+                currentDifficultyName = modo.nome,
+                gameStatus = GameStatus.READY,
+                board = emptyList()
+            )
+        }
+    }
 
     private fun generateBoard(rows: Int, cols: Int, mines: Int) {
         val newBoard = MutableList(rows) { r ->
             MutableList(cols) { c -> Cell(r, c) }
         }
 
-        // 1. Posicionar Minas
         val minePositions = mutableSetOf<Pair<Int, Int>>()
         while (minePositions.size < mines) {
             val r = Random.nextInt(rows)
@@ -100,7 +101,6 @@ class GameViewModel(
             newBoard[r][c] = newBoard[r][c].copy(isMine = true)
         }
 
-        // 2. Calcular Minas Adjacentes
         for (r in 0 until rows) {
             for (c in 0 until cols) {
                 if (!newBoard[r][c].isMine) {
@@ -139,10 +139,6 @@ class GameViewModel(
         return count
     }
 
-    // =======================================================
-    // Interação do Jogador
-    // =======================================================
-
     fun onCellClick(r: Int, c: Int) {
         if (_uiState.value.gameStatus != GameStatus.PLAYING) return
 
@@ -152,14 +148,12 @@ class GameViewModel(
         if (cell.isRevealed || cell.isFlagged) return
 
         if (cell.isMine) {
-            // FIM DE JOGO - PERDEU
             revealAllMines(currentBoard as MutableList<MutableList<Cell>>)
             _uiState.update {
                 it.copy(gameStatus = GameStatus.LOST, isGameOverDialogVisible = true, board = currentBoard)
             }
             stopTimer()
         } else {
-            // Célula segura
             val newBoard = revealCell(currentBoard, r, c)
             _uiState.update { it.copy(board = newBoard) }
             checkWinCondition(newBoard)
@@ -195,7 +189,6 @@ class GameViewModel(
 
         board[r][c] = cell.copy(isRevealed = true, isFlagged = false) // Revela e remove a bandeira, se houver
 
-        // Se for um espaço vazio (0 minas vizinhas), revela vizinhos
         if (cell.adjacentMines == 0) {
             for (dr in -1..1) {
                 for (dc in -1..1) {
@@ -225,15 +218,10 @@ class GameViewModel(
         val revealedCount = board.sumOf { row -> row.count { it.isRevealed && !it.isMine } }
 
         if (revealedCount == nonMineCells) {
-            // FIM DE JOGO - GANHOU
             _uiState.update { it.copy(gameStatus = GameStatus.WON, isGameOverDialogVisible = true) }
             stopTimer()
         }
     }
-
-    // =======================================================
-    // Configurações e Ranking
-    // =======================================================
 
     fun saveScore(playerName: String) {
         viewModelScope.launch {
@@ -250,13 +238,11 @@ class GameViewModel(
     }
 
     private fun calculateScore(time: Long, difficulty: String): Int {
-        // Lógica simples de pontuação: mais difícil, mais rápido = mais pontos
         val baseScore = when (difficulty) {
             "Médio" -> 500
             "Difícil" -> 1000
             else -> 100
         }
-        // Exemplo: 1000 - (tempo em segundos)
         val timePenalty = TimeUnit.MILLISECONDS.toSeconds(time).toInt()
         return (baseScore - timePenalty).coerceAtLeast(10)
     }
@@ -273,15 +259,11 @@ class GameViewModel(
         }
     }
 
-    // =======================================================
-    // Temporizador
-    // =======================================================
-
     private fun startTimer() {
-        stopTimer() // Garante que apenas um Job esteja ativo
+        stopTimer()
         timerJob = viewModelScope.launch {
             while (_uiState.value.gameStatus == GameStatus.PLAYING) {
-                delay(1000L) // Atraso de 1 segundo
+                delay(1000L)
                 _uiState.update { it.copy(timeElapsed = it.timeElapsed + 1000L) }
             }
         }

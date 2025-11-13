@@ -43,14 +43,17 @@ class GameRepositoryImpl(
 
     override suspend fun getModosDeDificuldade(): List<ModoDeDificuldade> {
        return try {
-           val querySnapshot = modosCollection.get().await()
+           val querySnapshot = modosCollection
+               .orderBy("linhas")
+               .get()
+               .await()
            querySnapshot.documents.mapNotNull { doc ->
                val modo = doc.toObject(ModoDeDificuldade::class.java)
                modo?.copy(id = doc.id)
            }
        } catch (e: Exception) {
            Log.e("GameRepositoryImpl", "Erro ao buscar modos", e)
-           emptyList()
+           listOf(ModoDeDificuldade.FACIL)
        }
     }
 

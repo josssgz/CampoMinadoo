@@ -10,19 +10,12 @@ data class ModoDeDificuldade(
     constructor() : this("","", 0, 0, 0)
 
     companion object {
-        val FACIL = ModoDeDificuldade(
+        var FACIL = ModoDeDificuldade(
             id = "easy",
             nome = "Fácil",
-            linhas = 8,
-            colunas = 8,
-            minas = 10
-        )
-        val MEDIO = ModoDeDificuldade(
-            id = "medium",
-            nome = "Médio",
-            linhas = 10,
-            colunas = 10,
-            minas = 14
+            linhas = 20,
+            colunas = 20,
+            minas = 24
         )
     }
 }

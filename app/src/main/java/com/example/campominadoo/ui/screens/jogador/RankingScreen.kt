@@ -71,7 +71,6 @@ fun RankingScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 item {
-                    // Cabeçalho da tabela
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -85,9 +84,8 @@ fun RankingScreen(
                     }
                 }
 
-                // OTIMIZAÇÃO: Usa itemsIndexed em vez de .withIndex().toList() para melhor performance.
                 itemsIndexed(rankingList) { index, ranking ->
-                    // A variável 'position' é calculada aqui (index + 1) e passada.
+
                     RankingItem(position = index + 1, ranking = ranking)
                 }
             }
@@ -97,7 +95,6 @@ fun RankingScreen(
 
 @Composable
 fun RankingItem(position: Int, ranking: Ranking) {
-    // BOAS PRÁTICAS: O SimpleDateFormat deve ser lembrado para evitar recriação
     val dateFormat = remember { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) }
 
     Row(
@@ -106,7 +103,6 @@ fun RankingItem(position: Int, ranking: Ranking) {
             .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // A variável 'position' é usada diretamente (ela é um parâmetro da função).
         Text("$position", modifier = Modifier.weight(0.5f), style = MaterialTheme.typography.labelLarge)
         Text(ranking.nomeJogador, modifier = Modifier.weight(2f), maxLines = 1, style = MaterialTheme.typography.labelLarge)
         Text(ranking.pontuacao.toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)

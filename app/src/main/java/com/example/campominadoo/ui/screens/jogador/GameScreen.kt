@@ -27,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +53,12 @@ fun GameScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(state.gameStatus) {
+        if (state.gameStatus == GameStatus.READY && state.currentDifficultyMode.linhas > 0) {
+            viewModel.startGame(state.currentDifficultyMode)
+        }
+    }
+
     val allCells = remember(state.board) { state.board.flatten() }
 
     Scaffold( topBar = {
@@ -63,7 +70,6 @@ fun GameScreen(
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Cabeçalho de Status
             Row(
                 modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -73,7 +79,6 @@ fun GameScreen(
                 Text("Status: ${state.gameStatus.name}", fontWeight = FontWeight.Bold)
             }
 
-            // Tabuleiro usando LazyVerticalGrid
             LazyVerticalGrid(
                 columns = GridCells.Fixed(state.cols.coerceAtLeast(1)),
                 modifier = Modifier.weight(1f).fillMaxWidth(),
@@ -90,21 +95,17 @@ fun GameScreen(
         }
     }
 
-    // Diálogo de Fim de Jogo
     if (state.isGameOverDialogVisible) {
         GameOverDialog(
             status = state.gameStatus,
-            timeElapsed = state.timeElapsed, // Passa o tempo real
+            timeElapsed = state.timeElapsed,
             onSaveScore = viewModel::saveScore,
-            onDismiss = { /* manter aberto ou navegar */ },
+            onDismiss = { /* fazer logica botao fechar */ },
             onNewGame = { viewModel.startGame(state.currentDifficultyMode) }
         )
     }
 }
 
-// ... (CellComposable permanece inalterado)
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CellComposable(cell: Cell, onClick: () -> Unit, onLongClick: () -> Unit) {
     Surface(
@@ -117,7 +118,7 @@ fun CellComposable(cell: Cell, onClick: () -> Unit, onLongClick: () -> Unit) {
             ),
         color = when {
             cell.isRevealed -> Color.LightGray
-            else -> Color(0xFFC0C0C0) // Cor cinza padrão
+            else -> Color(0xFFC0C0C0)
         },
         border = if (!cell.isRevealed) ButtonDefaults.outlinedButtonBorder else null
     ) {
@@ -141,12 +142,8 @@ fun CellComposable(cell: Cell, onClick: () -> Unit, onLongClick: () -> Unit) {
     }
 }
 
-/**
- * Corrige o tipo do parâmetro para Long e usa o Locale correto.
- */
 @Composable
 fun formatTime(timeMillis: Long): String {
-    // Usamos remember para evitar recriar o SimpleDateFormat em toda recomposição
     val formatter = remember { SimpleDateFormat("mm:ss", Locale.getDefault()) }
     return formatter.format(Date(timeMillis))
 }
@@ -154,7 +151,7 @@ fun formatTime(timeMillis: Long): String {
 @Composable
 fun GameOverDialog(
     status: GameStatus,
-    timeElapsed: Long, // Novo parâmetro
+    timeElapsed: Long,
     onSaveScore: (String) -> Unit,
     onDismiss: () -> Unit,
     onNewGame: () -> Unit
@@ -166,7 +163,6 @@ fun GameOverDialog(
         text = {
             Column {
                 Text(
-                    // Usa o timeElapsed real
                     text = if (status == GameStatus.WON) "Parabéns! Você desarmou todas as bombas em ${formatTime(timeElapsed)}."
                     else "Você atingiu uma mina. Tente novamente!",
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -184,7 +180,6 @@ fun GameOverDialog(
         confirmButton = {
             if (status == GameStatus.WON) {
                 Button(
-                    // Habilita o botão somente se o nome não estiver vazio (boas práticas de UX)
                     enabled = playerName.isNotBlank(),
                     onClick = { onSaveScore(playerName) }
                 ) {
